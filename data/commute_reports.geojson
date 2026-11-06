@@ -1,5 +1,10 @@
 {
   "type": "FeatureCollection",
+  "metadata": {
+    "notice": "SAMPLE／社群回報，未經驗證",
+    "generatedAt": "2026-11-06T06:05:38",
+    "publishedCount": 6
+  },
   "features": [
     {
       "type": "Feature",
@@ -27,8 +32,8 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          52.56,
-          13.45
+          120.3068,
+          22.7462
         ]
       },
       "properties": {
@@ -48,8 +53,8 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          13.25,
-          22.74
+          120.3141,
+          22.6479
         ]
       },
       "properties": {
@@ -69,8 +74,8 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          21.753,
-          29.753
+          120.3245,
+          22.7312
         ]
       },
       "properties": {
@@ -111,8 +116,8 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          111.11125,
-          20.753
+          120.3065,
+          22.6418
         ]
       },
       "properties": {
