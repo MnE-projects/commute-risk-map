@@ -1,0 +1,136 @@
+{
+  "type": "FeatureCollection",
+  "metadata": {
+    "notice": "SAMPLE／社群回報，未經驗證",
+    "generatedAt": "2026-11-06T06:05:38",
+    "publishedCount": 6
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.31,
+          22.753
+        ]
+      },
+      "properties": {
+        "reportId": "RPT-SAMPLE-0001",
+        "city": "高雄市",
+        "district": "橋頭區",
+        "place": "SAMPLE｜橋頭區示範路口 A",
+        "risk": "視線死角",
+        "timePeriod": "上班尖峰",
+        "createdAt": "11/4/2026 9:47 PM",
+        "status": "社群回報",
+        "verified": false
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.3068,
+          22.7462
+        ]
+      },
+      "properties": {
+        "reportId": "ROW-0003",
+        "city": "高雄市",
+        "district": "橋頭區",
+        "place": "SAMPLE｜Lists 表單測試路口",
+        "risk": "視線死角",
+        "timePeriod": "上班尖峰",
+        "createdAt": "11/4/2026 10:56 PM",
+        "status": "社群回報",
+        "verified": false
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.3141,
+          22.6479
+        ]
+      },
+      "properties": {
+        "reportId": "ROW-0004",
+        "city": "高雄市",
+        "district": "三民區",
+        "place": "測試用2",
+        "risk": "大型車／右轉盲區",
+        "timePeriod": "夜間",
+        "createdAt": "11/4/2026 11:01 PM",
+        "status": "社群回報",
+        "verified": false
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.3245,
+          22.7312
+        ]
+      },
+      "properties": {
+        "reportId": "ROW-0005",
+        "city": "高雄市",
+        "district": "楠梓區",
+        "place": "SAMPLE｜橋頭區示範路口 A",
+        "risk": "照明不足",
+        "timePeriod": "下班尖峰",
+        "createdAt": "11/4/2026 11:11 PM",
+        "status": "社群回報",
+        "verified": false
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.31,
+          22.753
+        ]
+      },
+      "properties": {
+        "reportId": "ROW-0006",
+        "city": "高雄市",
+        "district": "橋頭區",
+        "place": "SAMPLE｜橋頭區示範路口 A",
+        "risk": "視線死角",
+        "timePeriod": "下班尖峰",
+        "createdAt": "11/4/2026 11:12 PM",
+        "status": "社群回報",
+        "verified": false
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.3065,
+          22.6418
+        ]
+      },
+      "properties": {
+        "reportId": "ROW-0008",
+        "city": "高雄市",
+        "district": "三民區",
+        "place": "SAMPLE｜自動編號驗證",
+        "risk": "視線死角",
+        "timePeriod": "上班尖峰",
+        "createdAt": "11/5/2026 7:39 PM",
+        "status": "社群回報",
+        "verified": false
+      }
+    }
+  ]
+}
