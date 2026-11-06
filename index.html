@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>機車通勤風險共創地圖｜Leaflet SAMPLE</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+<style>
+:root{
+  --bg:#07111f;--panel:#0e1d2d;--panel2:#14283e;--line:#274159;
+  --text:#f8fafc;--muted:#9fb0c3;--orange:#ff6b22;--cyan:#2dd4bf;
+  --yellow:#fbbf24;--red:#fb7185;--green:#4ade80;
+}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(circle at 75% 0,#173758 0,transparent 34%),var(--bg);color:var(--text);font-family:"Microsoft JhengHei",system-ui,sans-serif}
+button,select,input{font:inherit}
+.app{min-height:100vh;display:grid;grid-template-columns:280px 1fr}
+.sidebar{padding:24px 18px;border-right:1px solid var(--line);background:rgba(7,17,31,.94);display:flex;flex-direction:column;gap:22px}
+.brand{display:flex;align-items:center;gap:12px;font-weight:900;font-size:19px}
+.logo{width:42px;height:42px;border-radius:13px;display:grid;place-items:center;background:linear-gradient(135deg,var(--orange),#ff9c68);box-shadow:0 12px 28px rgba(255,107,34,.22)}
+.sidebar h2{font-size:13px;color:var(--muted);margin:0 0 10px;text-transform:uppercase;letter-spacing:.08em}
+.filters{display:grid;gap:8px}
+.filter{cursor:pointer;border:1px solid transparent;border-radius:11px;background:transparent;color:var(--muted);padding:11px 12px;text-align:left;font-weight:700}
+.filter:hover,.filter.active{color:#fff;border-color:var(--line);background:linear-gradient(90deg,rgba(255,107,34,.18),rgba(255,107,34,.02))}
+.dot{display:inline-block;width:9px;height:9px;border-radius:999px;margin-right:8px}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stat{padding:13px;border:1px solid var(--line);border-radius:13px;background:var(--panel)}
+.stat strong{display:block;font-size:24px}.stat span{font-size:12px;color:var(--muted)}
+.note{margin-top:auto;font-size:12px;line-height:1.65;color:var(--muted)}
+.main{padding:24px;min-width:0}
+.header{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:16px}
+h1{margin:0;font-size:28px}.subtitle{margin:6px 0 0;color:var(--muted)}
+.sample{white-space:nowrap;padding:8px 12px;border:1px solid rgba(251,191,36,.35);background:rgba(251,191,36,.10);color:#fde68a;border-radius:999px;font-size:12px;font-weight:900}
+.warning{padding:11px 14px;border-radius:12px;margin-bottom:15px;background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.23);color:#fde68a;font-size:13px}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:15px}
+.card{background:linear-gradient(180deg,rgba(20,40,62,.98),rgba(11,28,45,.98));border:1px solid var(--line);border-radius:18px;padding:15px;box-shadow:0 20px 55px rgba(0,0,0,.22)}
+.map-tools{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.map-tools input,.map-tools select{background:#091827;border:1px solid #34506b;color:#fff;border-radius:10px;padding:9px 11px}
+.map-tools input{flex:1;min-width:190px}
+#map{height:640px;border-radius:13px;overflow:hidden;background:#0a1724}
+.leaflet-container{font-family:"Microsoft JhengHei",system-ui,sans-serif}
+.leaflet-popup-content-wrapper,.leaflet-popup-tip{background:#10253a;color:#fff}
+.popup-title{font-weight:900;font-size:15px;margin-bottom:5px}.popup-meta{color:#b9c7d6;font-size:12px;line-height:1.6}.popup-tag{display:inline-block;margin-top:7px;padding:4px 7px;border-radius:999px;background:#1b3853;color:#fff;font-size:11px}
+.panel-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.panel-head h2{margin:0;font-size:17px}.count{color:var(--cyan);font-size:12px;font-weight:900}
+.list{display:grid;gap:9px;max-height:620px;overflow:auto;padding-right:3px}
+.item{cursor:pointer;padding:13px;border:1px solid var(--line);border-radius:13px;background:rgba(6,17,29,.35)}
+.item:hover{border-color:#50718e}.item h3{margin:0 0 5px;font-size:14px}.item p{margin:0;color:var(--muted);font-size:12px;line-height:1.55}.meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.badge{padding:4px 7px;border-radius:999px;background:#173149;color:#bed0e1;font-size:10px}.status{color:#fde68a}
+.legend{display:flex;gap:13px;flex-wrap:wrap;color:var(--muted);font-size:11px;margin-top:10px}
+.empty{text-align:center;color:var(--muted);padding:30px 10px}
+@media(max-width:1050px){.app{grid-template-columns:1fr}.sidebar{display:block;padding:13px 16px;border-right:0;border-bottom:1px solid var(--line)}.brand{margin-bottom:12px}.sidebar section{display:inline-block;vertical-align:top;margin-right:13px}.filters{display:flex;overflow:auto}.filter{white-space:nowrap}.stats,.note{display:none}.main{padding:16px}.layout{grid-template-columns:1fr}.list{max-height:none}#map{height:520px}}
+@media(max-width:600px){.header{display:block}.sample{display:inline-block;margin-top:10px}h1{font-size:23px}#map{height:470px}.main{padding:12px}.card{padding:11px}}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand"><div class="logo">安</div><span>通勤風險共創地圖</span></div>
+    <section>
+      <h2>風險篩選</h2>
+      <div class="filters" id="riskFilters">
+        <button class="filter active" data-risk="全部"><i class="dot" style="background:#e2e8f0"></i>全部回報</button>
+        <button class="filter" data-risk="視線死角"><i class="dot" style="background:#fb7185"></i>視線死角</button>
+        <button class="filter" data-risk="大型車／右轉盲區"><i class="dot" style="background:#fbbf24"></i>大型車盲區</button>
+        <button class="filter" data-risk="路面坑洞／不平"><i class="dot" style="background:#2dd4bf"></i>路面狀況</button>
+        <button class="filter" data-risk="照明不足"><i class="dot" style="background:#818cf8"></i>照明不足</button>
+      </div>
+    </section>
+    <section>
+      <h2>展示統計</h2>
+      <div class="stats"><div class="stat"><strong id="visibleCount">5</strong><span>目前顯示</span></div><div class="stat"><strong>4</strong><span>涉及行政區</span></div></div>
+    </section>
+    <div class="note">所有點位、內容與統計均為 SAMPLE。正式網站不得讀取 Microsoft Lists 的建立者、電子郵件或其他身分欄位。</div>
+  </aside>
+
+  <main class="main">
+    <header class="header"><div><h1>高雄機車通勤風險地圖</h1><p class="subtitle">Leaflet 互動介面搭配 OpenStreetMap 底圖</p></div><span class="sample">SAMPLE · 未經驗證</span></header>
+    <div class="warning">這是前端功能範例。示範點位不代表真實事故、公司紀錄或道路安全統計。</div>
+    <div class="layout">
+      <section class="card">
+        <div class="map-tools">
+          <input id="searchInput" aria-label="搜尋地點" placeholder="搜尋行政區、地點或風險類型">
+          <select id="districtSelect" aria-label="行政區"><option value="全部">全部行政區</option><option>橋頭區</option><option>楠梓區</option><option>岡山區</option><option>左營區</option></select>
+          <button id="resetBtn" class="filter" type="button">回到全圖</button>
+        </div>
+        <div id="map" aria-label="通勤風險地圖"></div>
+        <div class="legend"><span><i class="dot" style="background:#fb7185"></i>高關注</span><span><i class="dot" style="background:#fbbf24"></i>中關注</span><span><i class="dot" style="background:#2dd4bf"></i>一般回報</span><span>© OpenStreetMap contributors</span></div>
+      </section>
+      <aside class="card">
+        <div class="panel-head"><h2>社群回報</h2><span class="count" id="listCount">5 筆</span></div>
+        <div class="list" id="reportList"></div>
+      </aside>
+    </div>
+  </main>
+</div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+<script>
+(() => {
+  const reports = [
+    {id:'RPT-0001', district:'橋頭區', place:'SAMPLE｜橋頭示範路口 A', risk:'視線死角', time:'上班尖峰', level:'high', lat:22.7530, lng:120.3100, text:'路側物件可能遮蔽支線來車視線。'},
+    {id:'RPT-0002', district:'楠梓區', place:'SAMPLE｜楠梓示範路段 B', risk:'大型車／右轉盲區', time:'下班尖峰', level:'high', lat:22.7240, lng:120.3020, text:'大型車右轉動線與機車直行方向交會。'},
+    {id:'RPT-0003', district:'岡山區', place:'SAMPLE｜岡山示範路口 C', risk:'路面坑洞／不平', time:'夜間', level:'mid', lat:22.7970, lng:120.2960, text:'示範路段路面狀況需留意。'},
+    {id:'RPT-0004', district:'左營區', place:'SAMPLE｜左營示範路口 D', risk:'照明不足', time:'夜間', level:'mid', lat:22.6880, lng:120.2950, text:'夜間照明與道路辨識度示範情境。'},
+    {id:'RPT-0005', district:'楠梓區', place:'SAMPLE｜楠梓示範路口 E', risk:'視線死角', time:'日間', level:'low', lat:22.7390, lng:120.3310, text:'轉角視線可能受到停放物件干擾。'}
+  ];
+  const colors={high:'#fb7185',mid:'#fbbf24',low:'#2dd4bf'};
+  let activeRisk='全部';
+  const map=L.map('map',{scrollWheelZoom:true}).setView([22.744,120.307],11.5);
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{
+    maxZoom:19,
+    attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+  }).addTo(map);
+  const markerLayer=L.layerGroup().addTo(map);
+  const markerIndex={};
+  const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+  function filtered(){
+    const q=document.getElementById('searchInput').value.trim().toLowerCase();
+    const district=document.getElementById('districtSelect').value;
+    return reports.filter(r=>(activeRisk==='全部'||r.risk===activeRisk)&&(district==='全部'||r.district===district)&&(!q||Object.values(r).join(' ').toLowerCase().includes(q)));
+  }
+  function render(){
+    const rows=filtered(); markerLayer.clearLayers(); Object.keys(markerIndex).forEach(k=>delete markerIndex[k]);
+    rows.forEach(r=>{
+      const marker=L.circleMarker([r.lat,r.lng],{radius:r.level==='high'?13:r.level==='mid'?10:8,color:colors[r.level],fillColor:colors[r.level],fillOpacity:.42,weight:2});
+      marker.bindPopup(`<div class="popup-title">${esc(r.place)}</div><div class="popup-meta">${esc(r.district)} · ${esc(r.time)}<br>${esc(r.text)}</div><span class="popup-tag">${esc(r.risk)}</span>`);
+      marker.addTo(markerLayer); markerIndex[r.id]=marker;
+    });
+    document.getElementById('reportList').innerHTML=rows.length?rows.map(r=>`<article class="item" data-id="${r.id}" tabindex="0"><h3>${esc(r.place)}</h3><p>${esc(r.text)}</p><div class="meta"><span class="badge">${esc(r.id)}</span><span class="badge">${esc(r.risk)}</span><span class="badge">${esc(r.time)}</span><span class="badge status">社群回報</span></div></article>`).join(''):'<div class="empty">沒有符合條件的回報</div>';
+    document.getElementById('visibleCount').textContent=rows.length;
+    document.getElementById('listCount').textContent=`${rows.length} 筆`;
+    document.querySelectorAll('.item').forEach(el=>{
+      const open=()=>{const r=reports.find(x=>x.id===el.dataset.id);map.flyTo([r.lat,r.lng],15,{duration:.7});markerIndex[r.id]?.openPopup()};
+      el.addEventListener('click',open);el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();open()}})
+    });
+  }
+  document.querySelectorAll('#riskFilters .filter').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('#riskFilters .filter').forEach(x=>x.classList.remove('active'));btn.classList.add('active');activeRisk=btn.dataset.risk;render()}));
+  document.getElementById('searchInput').addEventListener('input',render);
+  document.getElementById('districtSelect').addEventListener('change',render);
+  document.getElementById('resetBtn').addEventListener('click',()=>{activeRisk='全部';document.getElementById('searchInput').value='';document.getElementById('districtSelect').value='全部';document.querySelectorAll('#riskFilters .filter').forEach(x=>x.classList.toggle('active',x.dataset.risk==='全部'));map.setView([22.744,120.307],11.5);render()});
+  render();
+})();
+</script>
+</body>
+</html>
