@@ -2,7 +2,7 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>機車通勤風險共創地圖｜Leaflet SAMPLE</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
 <style>
@@ -47,8 +47,31 @@ h1{margin:0;font-size:28px}.subtitle{margin:6px 0 0;color:var(--muted)}
 .item:hover{border-color:#50718e}.item h3{margin:0 0 5px;font-size:14px}.item p{margin:0;color:var(--muted);font-size:12px;line-height:1.55}.meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.badge{padding:4px 7px;border-radius:999px;background:#173149;color:#bed0e1;font-size:10px}.status{color:#fde68a}
 .legend{display:flex;gap:13px;flex-wrap:wrap;color:var(--muted);font-size:11px;margin-top:10px}
 .empty{text-align:center;color:var(--muted);padding:30px 10px}
-@media(max-width:1050px){.app{grid-template-columns:1fr}.sidebar{display:block;padding:13px 16px;border-right:0;border-bottom:1px solid var(--line)}.brand{margin-bottom:12px}.sidebar section{display:inline-block;vertical-align:top;margin-right:13px}.filters{display:flex;overflow:auto}.filter{white-space:nowrap}.stats,.note{display:none}.main{padding:16px}.layout{grid-template-columns:1fr}.list{max-height:none}#map{height:520px}}
-@media(max-width:600px){.header{display:block}.sample{display:inline-block;margin-top:10px}h1{font-size:23px}#map{height:470px}.main{padding:12px}.card{padding:11px}}
+@media(max-width:1050px){
+  html,body{max-width:100%;overflow-x:hidden}
+  .app{display:block;min-width:0;width:100%}
+  .sidebar{display:block;width:100%;padding:13px 16px;border-right:0;border-bottom:1px solid var(--line)}
+  .brand{margin-bottom:12px}.sidebar section{display:block;margin:0 0 10px}
+  .filters{display:flex;max-width:100%;overflow-x:auto;overscroll-behavior-x:contain;padding-bottom:4px}
+  .filter{flex:0 0 auto;white-space:nowrap}.stats,.note{display:none}
+  .main{width:100%;min-width:0;padding:16px}.layout{display:block;width:100%}
+  .layout>.card{width:100%;min-width:0;margin-bottom:15px}.list{max-height:none}#map{width:100%;height:520px}
+}
+@media(max-width:600px){
+  .sidebar{padding:12px}.brand{font-size:17px}.logo{width:36px;height:36px}
+  .filters{display:grid;grid-template-columns:1fr 1fr;overflow:visible;gap:7px}
+  .filter{width:100%;min-width:0;white-space:normal;padding:9px 10px;font-size:13px}
+  .main{padding:10px}.header{display:block}.header h1{font-size:22px;line-height:1.25}
+  .subtitle{font-size:13px}.sample{display:inline-block;margin-top:10px}.warning{font-size:12px;padding:10px 11px}
+  .card{padding:9px;border-radius:14px}.map-tools{display:grid;grid-template-columns:1fr;gap:8px}
+  .map-tools input,.map-tools select,.map-tools button{display:block;width:100%;min-width:0}
+  #map{height:58vh;min-height:380px;max-height:560px;border-radius:10px}
+  .legend{gap:8px;font-size:10px}.panel-head{margin-top:2px}.item{padding:11px}
+}
+@media(max-width:380px){
+  .filters{grid-template-columns:1fr}
+  #map{height:54vh;min-height:340px}
+}
 </style>
 </head>
 <body>
@@ -138,6 +161,10 @@ h1{margin:0;font-size:28px}.subtitle{margin:6px 0 0;color:var(--muted)}
   document.getElementById('districtSelect').addEventListener('change',render);
   document.getElementById('resetBtn').addEventListener('click',()=>{activeRisk='全部';document.getElementById('searchInput').value='';document.getElementById('districtSelect').value='全部';document.querySelectorAll('#riskFilters .filter').forEach(x=>x.classList.toggle('active',x.dataset.risk==='全部'));map.setView([22.744,120.307],11.5);render()});
   render();
+  let resizeTimer;
+  const refreshMapSize=()=>{clearTimeout(resizeTimer);resizeTimer=setTimeout(()=>map.invalidateSize({pan:false}),150)};
+  window.addEventListener('resize',refreshMapSize);
+  window.addEventListener('orientationchange',refreshMapSize);
 })();
 </script>
 </body>
